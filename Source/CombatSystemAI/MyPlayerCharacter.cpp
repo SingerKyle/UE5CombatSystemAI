@@ -60,6 +60,8 @@ void AMyPlayerCharacter::Move(const FInputActionValue& Value)
 		AddMovementInput(ForwardDirection, MovementVector.Y);
 		AddMovementInput(RightDirection, MovementVector.X);
 	}
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, TEXT("Some debug message!"));
 }
 
 void AMyPlayerCharacter::Look(const FInputActionValue& Value)
@@ -87,5 +89,19 @@ void AMyPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputC
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// Set up action bindings
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+
+		//Jumping
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		//Moving
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::Move);
+
+		//Looking
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AMyPlayerCharacter::Look);
+
+	}
 }
 
